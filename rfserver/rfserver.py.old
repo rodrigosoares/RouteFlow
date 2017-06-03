@@ -8,11 +8,6 @@ import threading
 import time
 import argparse
 
-# Havox: Required libraries.
-import json
-import urllib2
-import re
-
 from bson.binary import Binary
 
 import rflib.ipc.IPC as IPC
@@ -44,10 +39,6 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
         ch.setLevel(logging.INFO)
         ch.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
         self.log.addHandler(ch)
-        # Havox: Request new rules from the API.
-        api_data = urllib2.urlopen('http://192.168.56.1:4567/generate')
-        self.havox_rules = json.load(api_data)
-        self.log.info("Havox: Got %i rules" % len(self.havox_rules))
 
         self.ipc = MongoIPC.MongoIPCMessageService(MONGO_ADDRESS,
                                                    MONGO_DB_NAME,
@@ -302,15 +293,6 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
             rm.add_option(Option.PRIORITY(PRIORITY_LOWEST + PRIORITY_BAND))
             # No action specifies discard
             pass
-        elif operation_id == DC_HAVOX:
-            # Havox: Havox rules must have the highest priority.
-            # rm.add_option(Option.PRIORITY(PRIORITY_HIGHEST))
-            dp_rules = filter(lambda rule: rule['dp_id'] == dp_id, self.havox_rules)
-            for rule in dp_rules:
-                # self.log.info("Havox: dp_id=%s: %s" % (dp_id, rule))
-                # rm.add_match()
-                # rm.add_action()
-                pass
         else:
             rm.add_option(Option.PRIORITY(PRIORITY_HIGH))
             if operation_id == DC_RIPV2:
@@ -364,8 +346,6 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
                                               DC_CLEAR_FLOW_TABLE)
             # TODO: enforce order: clear should always be executed first
             self.send_datapath_config_message(ct_id, dp_id, DC_DROP_ALL)
-            # Havox: Havox rules must come before any other.
-            self.send_datapath_config_message(ct_id, dp_id, DC_HAVOX)
             self.send_datapath_config_message(ct_id, dp_id, DC_OSPF)
             self.send_datapath_config_message(ct_id, dp_id, DC_BGP_PASSIVE)
             self.send_datapath_config_message(ct_id, dp_id, DC_BGP_ACTIVE)
