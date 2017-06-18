@@ -45,7 +45,9 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
         ch.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
         self.log.addHandler(ch)
         # Havox: Request new rules from the API.
-        api_data = urllib2.urlopen('http://192.168.56.1:4567/generate')
+        api_data = urllib2.urlopen('http://192.168.56.1:4567/rules/routeflow' \
+                                   '?force=true&expand=true&syntax=routeflow' \
+                                   '&output=true')
         self.havox_rules = json.load(api_data)
         self.log.info("Havox: Got %i rules" % len(self.havox_rules))
 
@@ -308,8 +310,17 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
             dp_rules = filter(lambda rule: rule['dp_id'] == dp_id, self.havox_rules)
             for rule in dp_rules:
                 # self.log.info("Havox: dp_id=%s: %s" % (dp_id, rule))
-                # rm.add_match()
-                # rm.add_action()
+                for field, value in rule['matches'].items():
+                    # self.log.info("Havox: field=%s, value=%s" % (field, value))
+                    # match_dict = { 'type': field.upper(), 'value': value }
+                    # self.log.info("Havox: dp_id=%s, field=%s, value=%s" % (dp_id, field.upper(), value))
+                    # rm.add_match(Match.from_dict(match_dict))
+                    pass
+                for action in rule['actions']:
+                    # self.log.info("Havox: action=%s, arg_a=%s, arg_b=%s" % (action['action'], action['arg_a'], action['arg_b']))
+                    # action_dict = { 'type': action['action'].upper(), 'value': action['arg_a'] }
+                    # rm.add_action(Action.from_dict(action_dict))
+                    pass
                 pass
         else:
             rm.add_option(Option.PRIORITY(PRIORITY_HIGH))
