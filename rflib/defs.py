@@ -42,7 +42,6 @@ DC_ICMP = 8			# ICMP protocol
 DC_LDP_PASSIVE = 9		# LDP protocol
 DC_LDP_ACTIVE = 10		# LDP protocol
 DC_ICMPV6 = 11			# ICMPv6 protocol
-DC_HAVOX = 50
 DC_ALL = 255			# Send all traffic to the controller
 
 RMT_ADD = 0			# Add flow to datapath

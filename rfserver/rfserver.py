@@ -304,24 +304,6 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
             rm.add_option(Option.PRIORITY(PRIORITY_LOWEST + PRIORITY_BAND))
             # No action specifies discard
             pass
-        elif operation_id == DC_HAVOX:
-            # Havox: Havox rules must have the highest priority.
-            # rm.add_option(Option.PRIORITY(PRIORITY_HIGHEST))
-            dp_rules = filter(lambda rule: rule['dp_id'] == dp_id, self.havox_rules)
-            for rule in dp_rules:
-                # self.log.info("Havox: dp_id=%s: %s" % (dp_id, rule))
-                for field, value in rule['matches'].items():
-                    # self.log.info("Havox: field=%s, value=%s" % (field, value))
-                    # match_dict = { 'type': field.upper(), 'value': value }
-                    # self.log.info("Havox: dp_id=%s, field=%s, value=%s" % (dp_id, field.upper(), value))
-                    # rm.add_match(Match.from_dict(match_dict))
-                    pass
-                for action in rule['actions']:
-                    # self.log.info("Havox: action=%s, arg_a=%s, arg_b=%s" % (action['action'], action['arg_a'], action['arg_b']))
-                    # action_dict = { 'type': action['action'].upper(), 'value': action['arg_a'] }
-                    # rm.add_action(Action.from_dict(action_dict))
-                    pass
-                pass
         else:
             rm.add_option(Option.PRIORITY(PRIORITY_HIGH))
             if operation_id == DC_RIPV2:
@@ -362,6 +344,31 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
         rm.add_option(Option.CT_ID(ct_id))
         self.ipc.send(RFSERVER_RFPROXY_CHANNEL, str(ct_id), rm)
 
+    def send_datapath_config_message_havox(self, ct_id, dp_id):
+        # Havox: Havox rules must have the highest priority.
+        dp_rules = filter(lambda rule: rule['dp_id'] == dp_id, self.havox_rules)
+        for rule in dp_rules:
+            rm = RouteMod(RMT_ADD, dp_id)
+            rm.add_option(Option.PRIORITY(PRIORITY_HIGHEST))
+            for field, value in rule['matches'].items():
+                type_str = field.upper()
+                if type_str == 'IPV4_SRC':
+                    pass # Havox: RouteFlow does not implement IPv4 source yet.
+                else:
+                    if type_str == 'IPV4':
+                        match = eval("Match.IPV4('%s', IPV4_MASK_EXACT)" % value)
+                        rm.add_match(match)
+                    else:
+                        match = eval("Match.%s(%d)" % (type_str, value))
+                        rm.add_match(match)
+
+            for action_obj in rule['actions']:
+                action_str = action_obj['action'].upper()
+                action = eval("Action.%s(%d)" % (action_str, action_obj['arg_a']))
+                rm.add_action(action)
+            rm.add_option(Option.CT_ID(ct_id))
+            self.ipc.send(RFSERVER_RFPROXY_CHANNEL, str(ct_id), rm)
+
     def config_dp(self, ct_id, dp_id):
         if is_rfvs(dp_id):
             # TODO: support more than one OVS
@@ -375,8 +382,6 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
                                               DC_CLEAR_FLOW_TABLE)
             # TODO: enforce order: clear should always be executed first
             self.send_datapath_config_message(ct_id, dp_id, DC_DROP_ALL)
-            # Havox: Havox rules must come before any other.
-            self.send_datapath_config_message(ct_id, dp_id, DC_HAVOX)
             self.send_datapath_config_message(ct_id, dp_id, DC_OSPF)
             self.send_datapath_config_message(ct_id, dp_id, DC_BGP_PASSIVE)
             self.send_datapath_config_message(ct_id, dp_id, DC_BGP_ACTIVE)
@@ -386,6 +391,8 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
             self.send_datapath_config_message(ct_id, dp_id, DC_ICMPV6)
             self.send_datapath_config_message(ct_id, dp_id, DC_LDP_PASSIVE)
             self.send_datapath_config_message(ct_id, dp_id, DC_LDP_ACTIVE)
+            # Havox: Havox rules must have precedence over any other.
+            self.send_datapath_config_message_havox(ct_id, dp_id)
             self.log.info("Configuring datapath (dp_id=%s)" % format_id(dp_id))
         return is_rfvs(dp_id)
 
