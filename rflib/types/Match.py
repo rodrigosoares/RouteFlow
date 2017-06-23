@@ -9,6 +9,7 @@ RFMT_ETHERTYPE = 5   # Match Ethernet type
 RFMT_NW_PROTO = 6    # Match Network Protocol
 RFMT_TP_SRC = 7      # Match Transport Layer Src Port
 RFMT_TP_DST = 8      # Match Transport Layer Dest Port
+RFMT_IPV4_SRC = 9    # Match IPv4 Source
 # MSB = 1; Indicates optional feature.
 RFMT_IN_PORT = 254   # Match incoming port (Unimplemented)
 RFMT_VLAN = 255      # Match incoming VLAN (Unimplemented)
@@ -21,7 +22,8 @@ typeStrings = {
             RFMT_ETHERTYPE : "RFMT_ETHERTYPE",
             RFMT_NW_PROTO : "RFMT_NW_PROTO",
             RFMT_TP_SRC : "RFMT_TP_SRC",
-            RFMT_TP_DST : "RFMT_TP_DST"
+            RFMT_TP_DST : "RFMT_TP_DST",
+            RFMT_IPV4_SRC : "RFMT_IPV4_SRC"
         }
 
 class Match(TLV):
@@ -34,6 +36,10 @@ class Match(TLV):
     @classmethod
     def IPV4(cls, address, netmask):
         return cls(RFMT_IPV4, (address, netmask))
+
+    @classmethod
+    def IPV4_SRC(cls, address, netmask):
+        return cls(RFMT_IPV4_SRC, (address, netmask))
 
     @classmethod
     def IPV6(cls, address, netmask):
@@ -80,7 +86,7 @@ class Match(TLV):
 
     @staticmethod
     def type_to_bin(matchType, value):
-        if matchType == RFMT_IPV4:
+        if matchType in (RFMT_IPV4, RFMT_IPV4_SRC):
             return inet_pton(AF_INET, value[0]) + inet_pton(AF_INET, value[1])
         elif matchType == RFMT_IPV6:
             return inet_pton(AF_INET6, value[0]) + inet_pton(AF_INET6, value[1])
@@ -103,7 +109,7 @@ class Match(TLV):
             return str(matchType)
 
     def get_value(self):
-        if self._type == RFMT_IPV4:
+        if self._type in (RFMT_IPV4, RFMT_IPV4_SRC):
             return (inet_ntop(AF_INET, self._value[:4]), inet_ntop(AF_INET, self._value[4:]))
         elif self._type == RFMT_IPV6:
             return (inet_ntop(AF_INET6, self._value[:16]), inet_ntop(AF_INET6, self._value[16:]))

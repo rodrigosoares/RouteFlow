@@ -74,11 +74,14 @@ def create_flow_mod(routemod):
 
     for match in routemod.get_matches():
         match = Match.from_dict(match)
-        if match._type == RFMT_IPV4:
+        if match._type in (RFMT_IPV4_SRC, RFMT_IPV4):
             addr = str(match.get_value()[0])
             prefix = get_cidr_prefix(inet_aton(match.get_value()[1]))
             ofm_match_dl(ofm, OFPFW_DL_TYPE, ETHERTYPE_IP)
-            ofm.match.set_nw_dst(str(addr) + "/" + str(prefix))
+            if match._type == RFMT_IPV4_SRC:
+                ofm.match.set_nw_src(str(addr) + "/" + str(prefix))
+            else:
+                ofm.match.set_nw_dst(str(addr) + "/" + str(prefix))
         elif match._type == RFMT_ETHERNET:
             ofm_match_dl(ofm, OFPFW_DL_DST, match.get_value())
         elif match._type == RFMT_ETHERTYPE:

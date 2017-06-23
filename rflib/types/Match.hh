@@ -12,6 +12,7 @@ enum MatchType {
     RFMT_NW_PROTO = 6,   /* Match Network Protocol */
     RFMT_TP_SRC = 7,     /* Match Transport Layer Src Port */
     RFMT_TP_DST = 8,     /* Match Transport Layer Dest Port */
+    RFMT_IPV4_SRC = 9,   /* Match IPv4 Source */
     /* MSB = 1; Indicates optional feature. */
     RFMT_IN_PORT = 254,  /* Match incoming port (Unimplemented) */
     RFMT_VLAN = 255      /* Match incoming VLAN (Unimplemented) */

@@ -39,6 +39,7 @@ bool Match::operator==(const Match& other) {
 std::string Match::type_to_string() const {
     switch (this->type) {
         case RFMT_IPV4:         return "RFMT_IPV4";
+        case RFMT_IPV4_SRC:     return "RFMT_IPV4_SRC";
         case RFMT_IPV6:         return "RFMT_IPV6";
         case RFMT_ETHERNET:     return "RFMT_ETHERNET";
         case RFMT_MPLS:         return "RFMT_MPLS";
@@ -55,6 +56,8 @@ std::string Match::type_to_string() const {
 size_t Match::type_to_length(uint8_t type) {
     switch (type) {
         case RFMT_IPV4:
+            return sizeof(struct ip_match);
+        case RFMT_IPV4_SRC:
             return sizeof(struct ip_match);
         case RFMT_IPV6:
             return sizeof(struct ip6_match);
@@ -80,6 +83,7 @@ size_t Match::type_to_length(uint8_t type) {
 byte_order Match::type_to_byte_order(uint8_t type) {
     switch (type) {
         case RFMT_IPV4:
+        case RFMT_IPV4_SRC:
         case RFMT_IPV6:
         case RFMT_ETHERNET:
             return ORDER_NETWORK;
