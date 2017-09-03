@@ -62,7 +62,7 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
                   'output': 'true',
                   'syntax': 'routeflow'}
         )
-        self.havox_rules = json.load(api_data.text)
+        self.havox_rules = json.loads(api_data.text)
         self.log.info("Havox: Got %i special rules" % len(self.havox_rules))
         # Havox: End of Havox request integration.
 
