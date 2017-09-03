@@ -46,9 +46,9 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
         self.log.addHandler(ch)
 
         # Havox: Request new rules from the Havox API.
-        url = 'http://localhost:4567/rules'
-        dot_file = 'hvxfiles/routeflow.dot'
-        hvx_file = 'hvxfiles/routeflow.hvx'
+        url = 'http://192.168.56.1:4567/rules'
+        dot_file = '../hvxfiles/routeflow.dot'
+        hvx_file = '../hvxfiles/routeflow.hvx'
         self.log.info('Havox: Requesting special rules from the Havox API')
         self.log.info("Havox: URL: %s" % url)
         self.log.info("Havox: Topology file: %s" % dot_file)
@@ -62,7 +62,7 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
                   'output': 'true',
                   'syntax': 'routeflow'}
         )
-        self.havox_rules = json.loads(api_data.text)
+        self.havox_rules = json.load(api_data.text)
         self.log.info("Havox: Got %i special rules" % len(self.havox_rules))
         # Havox: End of Havox request integration.
 
