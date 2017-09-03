@@ -5,3 +5,5 @@
 /build/*
 *.pyo
 *.pyc
+/hvxfiles/*.hvx
+/hvxfiles/*.dot

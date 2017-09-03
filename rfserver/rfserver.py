@@ -10,7 +10,7 @@ import argparse
 
 # Havox: Required libraries.
 import json
-import urllib2
+import requests
 import re
 
 from bson.binary import Binary
@@ -44,12 +44,27 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
         ch.setLevel(logging.INFO)
         ch.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
         self.log.addHandler(ch)
-        # Havox: Request new rules from the API.
-        api_data = urllib2.urlopen('http://192.168.56.1:4567/rules/routeflow' \
-                                   '?force=true&expand=true&syntax=routeflow' \
-                                   '&output=true')
-        self.havox_rules = json.load(api_data)
-        self.log.info("Havox: Got %i rules" % len(self.havox_rules))
+
+        # Havox: Request new rules from the Havox API.
+        url = 'http://localhost:4567/rules'
+        dot_file = 'hvxfiles/routeflow.dot'
+        hvx_file = 'hvxfiles/routeflow.hvx'
+        self.log.info('Havox: Requesting special rules from the Havox API')
+        self.log.info("Havox: URL: %s" % url)
+        self.log.info("Havox: Topology file: %s" % dot_file)
+        self.log.info("Havox: Instructions file: %s" % hvx_file)
+        files = {'dot_file': open(dot_file, 'r'),
+                 'hvx_file': open(hvx_file, 'r')}
+        api_data = requests.post(url, files=files,
+            data={'qos': 'min(100 Mbps)',
+                  'force': 'true',
+                  'expand': 'true',
+                  'output': 'true',
+                  'syntax': 'routeflow'}
+        )
+        self.havox_rules = json.loads(api_data.text)
+        self.log.info("Havox: Got %i special rules" % len(self.havox_rules))
+        # Havox: End of Havox request integration.
 
         self.ipc = MongoIPC.MongoIPCMessageService(MONGO_ADDRESS,
                                                    MONGO_DB_NAME,
