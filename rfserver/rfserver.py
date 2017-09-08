@@ -46,7 +46,6 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
         ch.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
         self.log.addHandler(ch)
 
-        #self.request_havox_rules()
         self.havox_rules = None
 
         self.ipc = MongoIPC.MongoIPCMessageService(MONGO_ADDRESS,
@@ -419,8 +418,7 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
             self.send_datapath_config_message(ct_id, dp_id, DC_LDP_PASSIVE)
             self.send_datapath_config_message(ct_id, dp_id, DC_LDP_ACTIVE)
             # Havox: Havox rules must have precedence over any other.
-            time.sleep(3)
-            self.send_datapath_config_message_havox(ct_id, dp_id)
+            # self.send_datapath_config_message_havox(ct_id, dp_id)
             self.log.info("Configuring datapath (dp_id=%s)" % format_id(dp_id))
         return is_rfvs(dp_id)
 
