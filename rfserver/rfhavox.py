@@ -61,7 +61,7 @@ class RFHavox():
 
     def __install_rules(self):
         self.log.info("%i rules will be installed" % len(self.havox_rules))
-        dp_ids = list(set([rule['dp_id'] from rule in self.havox_rules]))
+        dp_ids = list(set([rule['dp_id'] for rule in self.havox_rules]))
         for dp_id in dp_ids:
             self.__install_rules_in_datapath(CT_ID, dp_id)
 
