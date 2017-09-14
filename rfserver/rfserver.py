@@ -8,12 +8,6 @@ import threading
 import time
 import argparse
 
-# Havox: Required libraries.
-import json
-import requests
-import re
-import time
-
 from bson.binary import Binary
 
 import rflib.ipc.IPC as IPC
@@ -46,8 +40,6 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
         ch.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
         self.log.addHandler(ch)
 
-        self.havox_rules = None
-
         self.ipc = MongoIPC.MongoIPCMessageService(MONGO_ADDRESS,
                                                    MONGO_DB_NAME,
                                                    RFSERVER_ID,
@@ -55,32 +47,6 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
                                                    time.sleep)
         self.ipc.listen(RFCLIENT_RFSERVER_CHANNEL, self, self, False)
         self.ipc.listen(RFSERVER_RFPROXY_CHANNEL, self, self, True)
-
-    def request_havox_rules(self):
-        # Havox: Request new rules from the Havox API.
-        # time.sleep(180)
-        url = 'http://192.168.56.1:4567/rules'
-        dot_file = './hvxfiles/routeflow.dot'
-        hvx_file = './hvxfiles/routeflow.hvx'
-        self.log.info('Havox: Requesting special rules from the Havox API')
-        self.log.info("Havox: URL: %s" % url)
-        self.log.info("Havox: Topology file: %s" % dot_file)
-        self.log.info("Havox: Instructions file: %s" % hvx_file)
-        self.log.info("Havox: READING FILES")
-        files = {'dot_file': open(dot_file, 'r'),
-                 'hvx_file': open(hvx_file, 'r')}
-        self.log.info("Havox: REQUESTING")
-        api_data = requests.post(url, files=files,
-            data={'qos': 'min(100 Mbps)',
-                  'force': 'true',
-                  'expand': 'true',
-                  'output': 'true',
-                  'syntax': 'routeflow'}
-        )
-        self.log.info("Havox: PARSING JSON")
-        self.havox_rules = json.loads(api_data.text)
-        self.log.info("Havox: Got %i special rules" % len(self.havox_rules))
-        # Havox: End of Havox request integration.
 
     def process(self, from_, to, channel, msg):
         type_ = msg.get_type()
@@ -367,34 +333,6 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
         rm.add_option(Option.CT_ID(ct_id))
         self.ipc.send(RFSERVER_RFPROXY_CHANNEL, str(ct_id), rm)
 
-    def send_datapath_config_message_havox(self, ct_id, dp_id):
-        # Havox: Havox rules must have the highest priority.
-        if self.havox_rules is None:
-            self.log.info('Havox: No Havox rules yet. Requesting now.')
-            self.request_havox_rules()
-        dp_rules = filter(lambda rule: rule['dp_id'] == dp_id, self.havox_rules)
-        for rule in dp_rules:
-            rm = RouteMod(RMT_ADD, dp_id)
-            rm.add_option(Option.PRIORITY(PRIORITY_HIGHEST))
-            for field, value in rule['matches'].items():
-                type_str = field.upper()
-                if type_str == 'IPV4_SRC':
-                    pass # Havox: RouteFlow does not implement IPv4 source yet.
-                else:
-                    if type_str == 'IPV4':
-                        match = eval("Match.IPV4('%s', IPV4_MASK_EXACT)" % value)
-                        rm.add_match(match)
-                    else:
-                        match = eval("Match.%s(%d)" % (type_str, value))
-                        rm.add_match(match)
-
-            for action_obj in rule['actions']:
-                action_str = action_obj['action'].upper()
-                action = eval("Action.%s(%d)" % (action_str, action_obj['arg_a']))
-                rm.add_action(action)
-            rm.add_option(Option.CT_ID(ct_id))
-            self.ipc.send(RFSERVER_RFPROXY_CHANNEL, str(ct_id), rm)
-
     def config_dp(self, ct_id, dp_id):
         if is_rfvs(dp_id):
             # TODO: support more than one OVS
@@ -417,8 +355,6 @@ class RFServer(RFProtocolFactory, IPC.IPCMessageProcessor):
             self.send_datapath_config_message(ct_id, dp_id, DC_ICMPV6)
             self.send_datapath_config_message(ct_id, dp_id, DC_LDP_PASSIVE)
             self.send_datapath_config_message(ct_id, dp_id, DC_LDP_ACTIVE)
-            # Havox: Havox rules must have precedence over any other.
-            # self.send_datapath_config_message_havox(ct_id, dp_id)
             self.log.info("Configuring datapath (dp_id=%s)" % format_id(dp_id))
         return is_rfvs(dp_id)
 

@@ -7,6 +7,7 @@ import threading
 import time
 import json
 import requests
+import ipaddress
 import rflib.ipc.MongoIPC as MongoIPC
 from rflib.ipc.RFProtocol import *
 from rflib.defs import *
@@ -71,7 +72,10 @@ class RFHavox():
             if match_str == 'IPV4_SRC':
                 match = None # RouteFlow does not implement IPv4 source yet.
             elif match_str == 'IPV4':
-                match = eval("Match.IPV4('%s', IPV4_MASK_EXACT)" % value)
+                netw = ipaddress.ip_network(value)
+                ip = netw.network_address
+                netmask = netw.netmask
+                match = eval("Match.IPV4('%s', '%s')" % (ip, netmask))
             else:
                 match = eval("Match.%s(%d)" % (match_str, value))
             if match is not None: rm.add_match(match)
