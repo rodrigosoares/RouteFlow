@@ -56,7 +56,6 @@ std::string Match::type_to_string() const {
 size_t Match::type_to_length(uint8_t type) {
     switch (type) {
         case RFMT_IPV4:
-            return sizeof(struct ip_match);
         case RFMT_IPV4_SRC:
             return sizeof(struct ip_match);
         case RFMT_IPV6:

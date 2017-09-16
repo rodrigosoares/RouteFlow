@@ -66,16 +66,19 @@ class RFHavox():
         for dp_id in dp_ids:
             self.__install_rules_in_datapath(CT_ID, dp_id)
 
+    def __network_match(self, match_str, value):
+        netw = ipaddress.ip_network(value)
+        ip = netw.network_address
+        netmask = netw.netmask
+        return eval("Match.%s('%s', '%s')" % (match_str, ip, netmask))
+
     def __add_matches(self, rm, matches):
         for field, value in matches:
             match_str = field.upper()
             if match_str == 'IPV4_SRC':
-                match = None # RouteFlow does not implement IPv4 source yet.
+                match = self.__network_match('IPV4_SRC', value)
             elif match_str == 'IPV4':
-                netw = ipaddress.ip_network(value)
-                ip = netw.network_address
-                netmask = netw.netmask
-                match = eval("Match.IPV4('%s', '%s')" % (ip, netmask))
+                match = self.__network_match('IPV4', value)
             else:
                 match = eval("Match.%s(%d)" % (match_str, value))
             if match is not None: rm.add_match(match)
