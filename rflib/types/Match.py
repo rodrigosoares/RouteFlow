@@ -10,9 +10,9 @@ RFMT_NW_PROTO = 6    # Match Network Protocol
 RFMT_TP_SRC = 7      # Match Transport Layer Src Port
 RFMT_TP_DST = 8      # Match Transport Layer Dest Port
 RFMT_IPV4_SRC = 9    # Match IPv4 Source
+RFMT_VLAN_ID = 10    # Match incoming VLAN
 # MSB = 1; Indicates optional feature.
 RFMT_IN_PORT = 254   # Match incoming port (Unimplemented)
-RFMT_VLAN = 255      # Match incoming VLAN (Unimplemented)
 
 typeStrings = {
             RFMT_IPV4 : "RFMT_IPV4",
@@ -58,8 +58,8 @@ class Match(TLV):
         return cls(RFMT_IN_PORT, port)
 
     @classmethod
-    def VLAN(cls, tag):
-        return cls(RFMT_VLAN, tag)
+    def VLAN_ID(cls, tag):
+        return cls(RFMT_VLAN_ID, tag)
 
     @classmethod
     def ETHERTYPE(cls, ethertype):
@@ -94,7 +94,7 @@ class Match(TLV):
             return ether_to_bin(value)
         elif matchType in (RFMT_MPLS, RFMT_IN_PORT):
             return int_to_bin(value, 32)
-        elif matchType in (RFMT_VLAN, RFMT_ETHERTYPE, RFMT_TP_SRC, RFMT_TP_DST):
+        elif matchType in (RFMT_VLAN_ID, RFMT_ETHERTYPE, RFMT_TP_SRC, RFMT_TP_DST):
             return int_to_bin(value, 16)
         elif matchType == RFMT_NW_PROTO:
             return int_to_bin(value, 8)
@@ -115,8 +115,9 @@ class Match(TLV):
             return (inet_ntop(AF_INET6, self._value[:16]), inet_ntop(AF_INET6, self._value[16:]))
         elif self._type == RFMT_ETHERNET:
             return bin_to_ether(self._value)
-        elif self._type in (RFMT_MPLS, RFMT_IN_PORT, RFMT_VLAN, RFMT_ETHERTYPE,
-                            RFMT_NW_PROTO, RFMT_TP_SRC, RFMT_TP_DST):
+        elif self._type in (RFMT_MPLS, RFMT_IN_PORT, RFMT_VLAN_ID,
+                            RFMT_ETHERTYPE, RFMT_NW_PROTO, RFMT_TP_SRC,
+                            RFMT_TP_DST):
             return bin_to_int(self._value)
         else:
             return None

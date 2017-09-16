@@ -10,6 +10,8 @@ enum ActionType {
     RFAT_PUSH_MPLS = 4,     /* Push MPLS label */
     RFAT_POP_MPLS = 5,      /* Pop MPLS label */
     RFAT_SWAP_MPLS = 6,     /* Swap MPLS label */
+    RFAT_SET_VLAN_ID = 7    /* Set VLAN ID */
+    RFAT_STRIP_VLAN = 8     /* Remove VLAN ID */
     /* MSB = 1; Indicates optional feature. */
     RFAT_DROP = 254,        /* Drop packet (Unimplemented) */
     RFAT_SFLOW = 255,       /* Generate SFlow messages (Unimplemented) */
