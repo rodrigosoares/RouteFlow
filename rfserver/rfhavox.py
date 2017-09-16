@@ -52,7 +52,7 @@ class RFHavox():
         api_data = requests.post(url, files=files,
             data={'qos': 'min(100 Mbps)',
                   'force': 'true',
-                  'expand': 'true',
+                  'expand': 'false',
                   'output': 'true',
                   'syntax': 'routeflow'}
         )
@@ -83,7 +83,10 @@ class RFHavox():
     def __add_actions(self, rm, actions):
         for action_obj in actions:
             action_str = action_obj['action'].upper()
-            action = eval("Action.%s(%d)" % (action_str, action_obj['arg_a']))
+            if action_str == 'STRIP_VLAN':
+                action = Action.STRIP_VLAN()
+            else:
+                action = eval("Action.%s(%d)" % (action_str, action_obj['arg_a']))
             rm.add_action(action)
 
     def __install_rules_in_datapath(self, ct_id, dp_id):
