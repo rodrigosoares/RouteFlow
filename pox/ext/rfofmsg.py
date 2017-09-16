@@ -111,6 +111,10 @@ def create_flow_mod(routemod):
         value = action.get_value()
         if action._type == RFAT_OUTPUT:
             ofm.actions.append(ofp_action_output(port=(value & 0xFFFF)))
+        elif action._type == RFAT_SET_VLAN_ID:
+            ofm.actions.append(ofp_action_vlan_vid(vlan_vid=(value & 0xFFFF)))
+        elif action._type == RFAT_STRIP_VLAN:
+            ofm.actions.append(ofp_action_strip_vlan())
         elif action._type == RFAT_SET_ETH_SRC:
             ofm.actions.append(ofp_action_dl_addr(type=OFPAT_SET_DL_SRC,
                                                   dl_addr=EthAddr(value)))
