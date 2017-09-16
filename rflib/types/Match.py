@@ -23,7 +23,8 @@ typeStrings = {
             RFMT_NW_PROTO : "RFMT_NW_PROTO",
             RFMT_TP_SRC : "RFMT_TP_SRC",
             RFMT_TP_DST : "RFMT_TP_DST",
-            RFMT_IPV4_SRC : "RFMT_IPV4_SRC"
+            RFMT_IPV4_SRC : "RFMT_IPV4_SRC",
+            RFMT_VLAN_ID : "RFMT_VLAN_ID"
         }
 
 class Match(TLV):
