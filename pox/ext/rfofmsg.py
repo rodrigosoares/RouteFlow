@@ -31,6 +31,9 @@ def ofm_match_dl(ofm, match, value):
     # Ethernet destination address
     if match & OFPFW_DL_DST:
         ofm.match.dl_dst = EthAddr(value)
+    # VLAN ID
+    if match & OFPFW_DL_VLAN:
+        ofm.match.dl_vlan = value
 
 def ofm_match_nw(ofm, match, proto, tos, src, dst):
     ofm.match.wildcards &= ~match
@@ -92,6 +95,8 @@ def create_flow_mod(routemod):
             ofm_match_tp(ofm, OFPFW_TP_SRC, match.get_value(), 0)
         elif match._type == RFMT_TP_DST:
             ofm_match_tp(ofm, OFPFW_TP_DST, 0, match.get_value())
+        elif match._type == RFMT_VLAN_ID:
+            ofm_match_dl(ofm, OFPFW_DL_VLAN, match.get_value())
         elif match._type == RFMT_IN_PORT:
             ofm_match_port(ofm, OFPFW_IN_PORT, match.get_value())
         elif match.optional():
