@@ -73,13 +73,13 @@ reset() {
 
     echo_bold "-> Deleting (previous) run data...";
     mongo db --eval "
-        db.getCollection('rftable').drop(); 
-        db.getCollection('rfconfig').drop(); 
-        db.getCollection('rfstats').drop(); 
-        db.getCollection('rfclient<->rfserver').drop(); 
+        db.getCollection('rftable').drop();
+        db.getCollection('rfconfig').drop();
+        db.getCollection('rfstats').drop();
+        db.getCollection('rfclient<->rfserver').drop();
         db.getCollection('rfserver<->rfproxy').drop();
     "
-        
+
     rm -rf /var/lib/lxc/rfvmA/rootfs/opt/rfclient;
     rm -rf /var/lib/lxc/rfvmB/rootfs/opt/rfclient;
     rm -rf /var/lib/lxc/rfvmC/rootfs/opt/rfclient;
@@ -168,6 +168,10 @@ ovs-vsctl add-port dp0 rfvmD.3
 ovs-vsctl add-port dp0 rfvmD.4
 ovs-vsctl set Bridge dp0 other-config:datapath-id=7266767372667673
 ovs-vsctl set-controller dp0 tcp:127.0.0.1:$CONTROLLER_PORT
+
+echo_bold "-> Starting RFHavox for requesting special rules..."
+sleep 10
+./rfserver/rfhavox.py &
 
 echo_bold "---"
 echo_bold "This test is up and running."

@@ -9,6 +9,8 @@ RFAT_SET_ETH_DST = 3    # Ethernet destination address
 RFAT_PUSH_MPLS = 4      # Push MPLS label
 RFAT_POP_MPLS = 5       # Pop MPLS label
 RFAT_SWAP_MPLS = 6      # Swap MPLS label
+RFAT_SET_VLAN_ID = 7    # Set VLAN ID
+RFAT_STRIP_VLAN = 8     # Remove VLAN ID
 # MSB = 1; Indicates optional feature.
 RFAT_DROP = 254         # Drop packet (Unimplemented)
 RFAT_SFLOW = 255        # Generate SFlow messages (Unimplemented)
@@ -19,7 +21,9 @@ typeStrings = {
             RFAT_SET_ETH_DST : "RFAT_SET_ETH_DST",
             RFAT_PUSH_MPLS : "RFAT_PUSH_MPLS",
             RFAT_POP_MPLS : "RFAT_POP_MPLS",
-            RFAT_SWAP_MPLS : "RFAT_SWAP_MPLS"
+            RFAT_SWAP_MPLS : "RFAT_SWAP_MPLS",
+            RFAT_SET_VLAN_ID : "RFAT_SET_VLAN_ID",
+            RFAT_STRIP_VLAN : "RFAT_STRIP_VLAN"
         }
 
 class Action(TLV):
@@ -54,6 +58,14 @@ class Action(TLV):
         return cls(RFAT_SWAP_MPLS, label)
 
     @classmethod
+    def SET_VLAN_ID(cls, vlan_id):
+        return cls(RFAT_SET_VLAN_ID, vlan_id)
+
+    @classmethod
+    def STRIP_VLAN(cls):
+        return cls(RFAT_STRIP_VLAN)
+
+    @classmethod
     def DROP(cls):
         return cls(RFAT_DROP, None)
 
@@ -74,11 +86,13 @@ class Action(TLV):
 
     @staticmethod
     def type_to_bin(actionType, value):
-        if actionType in (RFAT_OUTPUT, RFAT_PUSH_MPLS, RFAT_SWAP_MPLS):
+        if actionType in (RFAT_OUTPUT, RFAT_PUSH_MPLS, RFAT_SWAP_MPLS,
+                          RFAT_SET_VLAN_ID):
             return int_to_bin(value, 32)
         elif actionType in (RFAT_SET_ETH_SRC, RFAT_SET_ETH_DST):
             return ether_to_bin(value)
-        elif actionType in (RFAT_POP_MPLS, RFAT_DROP, RFAT_SFLOW):
+        elif actionType in (RFAT_POP_MPLS, RFAT_DROP, RFAT_SFLOW,
+                            RFAT_STRIP_VLAN):
             return ''
         else:
             return None
@@ -91,11 +105,13 @@ class Action(TLV):
             return str(actionType)
 
     def get_value(self):
-        if self._type in (RFAT_OUTPUT, RFAT_PUSH_MPLS, RFAT_SWAP_MPLS):
+        if self._type in (RFAT_OUTPUT, RFAT_PUSH_MPLS, RFAT_SWAP_MPLS,
+                          RFAT_SET_VLAN_ID):
             return bin_to_int(self._value)
         elif self._type in (RFAT_SET_ETH_SRC, RFAT_SET_ETH_DST):
             return bin_to_ether(self._value)
-        elif self._type in (RFAT_POP_MPLS, RFAT_DROP, RFAT_SFLOW):
+        elif self._type in (RFAT_POP_MPLS, RFAT_DROP, RFAT_SFLOW,
+                            RFAT_STRIP_VLAN):
             return None
         else:
             return None
