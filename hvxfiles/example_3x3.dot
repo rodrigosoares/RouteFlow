@@ -1,0 +1,81 @@
+digraph g1 {
+  h1 [type = host, mac = "00:00:00:00:00:01", ip = "172.31.1.100"];
+  h2 [type = host, mac = "00:00:00:00:00:02", ip = "172.31.2.100"];
+  h3 [type = host, mac = "00:00:00:00:00:03", ip = "172.31.3.100"];
+  h4 [type = host, mac = "00:00:00:00:00:04", ip = "172.31.4.100"];
+  h5 [type = host, mac = "00:00:00:00:00:05", ip = "172.31.5.100"];
+  h6 [type = host, mac = "00:00:00:00:00:06", ip = "172.31.6.100"];
+  h7 [type = host, mac = "00:00:00:00:00:07", ip = "172.31.7.100"];
+  h8 [type = host, mac = "00:00:00:00:00:08", ip = "172.31.8.100"];
+  h9 [type = host, mac = "00:00:00:00:00:09", ip = "172.31.9.100"];
+
+  s1 [type = switch, ip = "172.31.1.1", id = 1];
+  s2 [type = switch, ip = "172.31.2.1", id = 2];
+  s3 [type = switch, ip = "172.31.3.1", id = 3];
+  s4 [type = switch, ip = "172.31.4.1", id = 4];
+  s5 [type = switch, ip = "172.31.5.1", id = 5];
+  s6 [type = switch, ip = "172.31.6.1", id = 6];
+  s7 [type = switch, ip = "172.31.7.1", id = 7];
+  s8 [type = switch, ip = "172.31.8.1", id = 8];
+  s9 [type = switch, ip = "172.31.9.1", id = 9];
+
+  s1 -> h1 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+  h1 -> s1 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+
+  s2 -> h2 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+  h2 -> s2 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+
+  s3 -> h3 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+  h3 -> s3 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+
+  s4 -> h4 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+  h4 -> s4 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+
+  s5 -> h5 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+  h5 -> s5 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+
+  s6 -> h6 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+  h6 -> s6 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+
+  s7 -> h7 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+  h7 -> s7 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+
+  s8 -> h8 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+  h8 -> s8 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+
+  s9 -> h9 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+  h9 -> s9 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+
+  s1 -> s2 [src_port = 2, dst_port = 2, cost = 1, capacity = "1Gbps"];
+  s1 -> s4 [src_port = 3, dst_port = 2, cost = 1, capacity = "1Gbps"];
+
+  s2 -> s1 [src_port = 2, dst_port = 2, cost = 1, capacity = "1Gbps"];
+  s2 -> s3 [src_port = 3, dst_port = 2, cost = 1, capacity = "1Gbps"];
+  s2 -> s5 [src_port = 4, dst_port = 1, cost = 1, capacity = "1Gbps"];
+
+  s3 -> s2 [src_port = 2, dst_port = 3, cost = 1, capacity = "1Gbps"];
+  s3 -> s6 [src_port = 3, dst_port = 2, cost = 1, capacity = "1Gbps"];
+
+  s4 -> s1 [src_port = 2, dst_port = 3, cost = 1, capacity = "1Gbps"];
+  s4 -> s5 [src_port = 4, dst_port = 2, cost = 1, capacity = "1Gbps"];
+  s4 -> s7 [src_port = 3, dst_port = 3, cost = 1, capacity = "1Gbps"];
+
+  s5 -> s2 [src_port = 1, dst_port = 4, cost = 1, capacity = "1Gbps"];
+  s5 -> s4 [src_port = 2, dst_port = 4, cost = 1, capacity = "1Gbps"];
+  s5 -> s6 [src_port = 3, dst_port = 4, cost = 1, capacity = "1Gbps"];
+  s5 -> s8 [src_port = 4, dst_port = 4, cost = 1, capacity = "1Gbps"];
+
+  s6 -> s3 [src_port = 2, dst_port = 3, cost = 1, capacity = "1Gbps"];
+  s6 -> s5 [src_port = 4, dst_port = 3, cost = 1, capacity = "1Gbps"];
+  s6 -> s9 [src_port = 3, dst_port = 3, cost = 1, capacity = "1Gbps"];
+
+  s7 -> s4 [src_port = 3, dst_port = 3, cost = 1, capacity = "1Gbps"];
+  s7 -> s8 [src_port = 2, dst_port = 2, cost = 1, capacity = "1Gbps"];
+
+  s8 -> s5 [src_port = 4, dst_port = 4, cost = 1, capacity = "1Gbps"];
+  s8 -> s7 [src_port = 2, dst_port = 2, cost = 1, capacity = "1Gbps"];
+  s8 -> s9 [src_port = 3, dst_port = 2, cost = 1, capacity = "1Gbps"];
+
+  s9 -> s6 [src_port = 3, dst_port = 3, cost = 1, capacity = "1Gbps"];
+  s9 -> s8 [src_port = 2, dst_port = 3, cost = 1, capacity = "1Gbps"];
+}

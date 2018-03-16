@@ -1,0 +1,4 @@
+Havox::Network.define do
+  topology 'example_2x2.dot'
+  exit(:s4) { destination_port 80 }
+end

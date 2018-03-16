@@ -1,0 +1,5 @@
+Havox::Network.define do
+  topology 'example_3x3.dot'
+  associate :rfvmE, :s5
+  exit(:s4) { destination_port 80 }
+end
