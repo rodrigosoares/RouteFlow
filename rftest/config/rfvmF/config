@@ -1,34 +1,34 @@
-lxc.utsname = rfvmB
+lxc.utsname = rfvmF
 lxc.network.type = veth
 lxc.network.flags = up
-lxc.network.hwaddr = 02:b0:b0:b0:b0:b0
+lxc.network.hwaddr = 02:f0:f0:f0:f0:f0
 lxc.network.link=lxcbr0
 
 lxc.network.type = veth
 lxc.network.flags = up
-lxc.network.veth.pair = rfvmB.1
-lxc.network.hwaddr = 02:b1:b1:b1:b1:b1
+lxc.network.veth.pair = rfvmF.1
+lxc.network.hwaddr = 02:f1:f1:f1:f1:f1
 
 lxc.network.type = veth
 lxc.network.flags = up
-lxc.network.veth.pair = rfvmB.2
-lxc.network.hwaddr = 02:b2:b2:b2:b2:b2
+lxc.network.veth.pair = rfvmF.2
+lxc.network.hwaddr = 02:f2:f2:f2:f2:f2
 
 lxc.network.type = veth
 lxc.network.flags = up
-lxc.network.veth.pair = rfvmB.3
-lxc.network.hwaddr = 02:b3:b3:b3:b3:b3
+lxc.network.veth.pair = rfvmF.3
+lxc.network.hwaddr = 02:f3:f3:f3:f3:f3
 
 lxc.network.type = veth
 lxc.network.flags = up
-lxc.network.veth.pair = rfvmB.4
-lxc.network.hwaddr = 02:b4:b4:b4:b4:b4
+lxc.network.veth.pair = rfvmF.4
+lxc.network.hwaddr = 02:f4:f4:f4:f4:f4
 
 lxc.devttydir = lxc
 lxc.tty = 4
 lxc.pts = 1024
-lxc.rootfs = /var/lib/lxc/rfvmB/rootfs
-lxc.mount  = /var/lib/lxc/rfvmB/fstab
+lxc.rootfs = /var/lib/lxc/rfvmF/rootfs
+lxc.mount  = /var/lib/lxc/rfvmF/fstab
 lxc.arch = amd64
 lxc.cap.drop = sys_module mac_admin
 lxc.pivotdir = lxc_putold

@@ -39,8 +39,8 @@ class RFHavox():
 
     def __request_rules(self):
         url = 'http://192.168.56.1:4567/rules'
-        dot_file = './hvxfiles/routeflow.dot'
-        hvx_file = './hvxfiles/routeflow.hvx'
+        dot_file = './hvxfiles/example_3x3.dot'
+        hvx_file = './hvxfiles/example_3x3.hvx'
         self.log.info('Requesting special rules from the Havox API')
         self.log.info("URL: %s" % url)
         self.log.info('Reading files')

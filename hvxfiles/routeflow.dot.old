@@ -1,0 +1,37 @@
+digraph g1 {
+  h1 [type = host, mac = "00:00:00:00:00:01", ip = "172.31.1.100"];
+  h2 [type = host, mac = "00:00:00:00:00:02", ip = "172.31.2.100"];
+  h3 [type = host, mac = "00:00:00:00:00:03", ip = "172.31.3.100"];
+  h4 [type = host, mac = "00:00:00:00:00:04", ip = "172.31.4.100"];
+
+  s5 [type = switch, ip = "172.31.1.1", id = 5];
+  s6 [type = switch, ip = "172.31.2.1", id = 6];
+  s7 [type = switch, ip = "172.31.3.1", id = 7];
+  s8 [type = switch, ip = "172.31.4.1", id = 8];
+
+  s5 -> h1 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+  h1 -> s5 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+
+  s6 -> h2 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+  h2 -> s6 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+
+  s7 -> h3 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+  h3 -> s7 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+
+  s8 -> h4 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+  h4 -> s8 [src_port = 1, dst_port = 1, cost = 1, capacity = "1Gbps"];
+
+  s5 -> s6 [src_port = 2, dst_port = 2, cost = 1, capacity = "1Gbps"];
+  s5 -> s7 [src_port = 3, dst_port = 3, cost = 1, capacity = "1Gbps"];
+  s5 -> s8 [src_port = 4, dst_port = 4, cost = 1, capacity = "1Gbps"];
+
+  s6 -> s5 [src_port = 2, dst_port = 2, cost = 1, capacity = "1Gbps"];
+  s6 -> s8 [src_port = 3, dst_port = 2, cost = 1, capacity = "1Gbps"];
+
+  s7 -> s5 [src_port = 3, dst_port = 3, cost = 1, capacity = "1Gbps"];
+  s7 -> s8 [src_port = 2, dst_port = 3, cost = 1, capacity = "1Gbps"];
+
+  s8 -> s5 [src_port = 4, dst_port = 4, cost = 1, capacity = "1Gbps"];
+  s8 -> s6 [src_port = 2, dst_port = 3, cost = 1, capacity = "1Gbps"];
+  s8 -> s7 [src_port = 3, dst_port = 2, cost = 1, capacity = "1Gbps"];
+}
