@@ -19,11 +19,6 @@ lxc.network.flags = up
 lxc.network.veth.pair = rfvmB.3
 lxc.network.hwaddr = 02:b3:b3:b3:b3:b3
 
-lxc.network.type = veth
-lxc.network.flags = up
-lxc.network.veth.pair = rfvmB.4
-lxc.network.hwaddr = 02:b4:b4:b4:b4:b4
-
 lxc.devttydir = lxc
 lxc.tty = 4
 lxc.pts = 1024

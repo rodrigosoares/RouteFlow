@@ -114,21 +114,25 @@ echo "#!/bin/sh" > /var/lib/lxc/rfvmA/rootfs/root/run_rfclient.sh
 echo "sleep 3" >> /var/lib/lxc/rfvmA/rootfs/root/run_rfclient.sh
 echo "/etc/init.d/quagga start" >> /var/lib/lxc/rfvmA/rootfs/root/run_rfclient.sh
 echo "/opt/rfclient/rfclient > /var/log/rfclient.log" >> /var/lib/lxc/rfvmA/rootfs/root/run_rfclient.sh
+echo "echo 1 > /proc/sys/net/ipv4/ip_forward" >> /var/lib/lxc/rfvmA/rootfs/root/run_rfclient.sh
 
 echo "#!/bin/sh" > /var/lib/lxc/rfvmB/rootfs/root/run_rfclient.sh
 echo "sleep 3" >> /var/lib/lxc/rfvmB/rootfs/root/run_rfclient.sh
 echo "/etc/init.d/quagga start" >> /var/lib/lxc/rfvmB/rootfs/root/run_rfclient.sh
 echo "/opt/rfclient/rfclient > /var/log/rfclient.log" >> /var/lib/lxc/rfvmB/rootfs/root/run_rfclient.sh
+echo "echo 1 > /proc/sys/net/ipv4/ip_forward" >> /var/lib/lxc/rfvmB/rootfs/root/run_rfclient.sh
 
 echo "#!/bin/sh" > /var/lib/lxc/rfvmC/rootfs/root/run_rfclient.sh
 echo "sleep 3" >> /var/lib/lxc/rfvmC/rootfs/root/run_rfclient.sh
 echo "/etc/init.d/quagga start" >> /var/lib/lxc/rfvmC/rootfs/root/run_rfclient.sh
 echo "/opt/rfclient/rfclient > /var/log/rfclient.log" >> /var/lib/lxc/rfvmC/rootfs/root/run_rfclient.sh
+echo "echo 1 > /proc/sys/net/ipv4/ip_forward" >> /var/lib/lxc/rfvmC/rootfs/root/run_rfclient.sh
 
 echo "#!/bin/sh" > /var/lib/lxc/rfvmD/rootfs/root/run_rfclient.sh
 echo "sleep 3" >> /var/lib/lxc/rfvmD/rootfs/root/run_rfclient.sh
 echo "/etc/init.d/quagga start" >> /var/lib/lxc/rfvmD/rootfs/root/run_rfclient.sh
 echo "/opt/rfclient/rfclient > /var/log/rfclient.log" >> /var/lib/lxc/rfvmD/rootfs/root/run_rfclient.sh
+echo "echo 1 > /proc/sys/net/ipv4/ip_forward" >> /var/lib/lxc/rfvmD/rootfs/root/run_rfclient.sh
 
 chmod +x /var/lib/lxc/rfvmA/rootfs/root/run_rfclient.sh
 chmod +x /var/lib/lxc/rfvmB/rootfs/root/run_rfclient.sh
