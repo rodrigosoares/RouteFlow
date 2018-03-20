@@ -1,4 +1,5 @@
 Havox::Network.define do
   topology 'example_2x2.dot'
   exit(:s4) { destination_port 80 }
+  exit(:s2) { destination_ip '172.50.0.0/16' }
 end
